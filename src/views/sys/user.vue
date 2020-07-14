@@ -5,9 +5,9 @@
         <el-input v-model="dataForm.userName" placeholder="用户名" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:user:delete')" type="danger" :disabled="dataListSelections.length <= 0" @click="deleteHandle()">批量删除</el-button>
+        <el-button @click="searchUserByName()">查询</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button type="danger" :disabled="dataListSelections.length <= 0" @click="deleteHandle()">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -32,19 +32,19 @@
         label="ID"
       />
       <el-table-column
-        prop="username"
+        prop="userName"
         header-align="center"
         align="center"
         label="用户名"
       />
       <el-table-column
-        prop="email"
+        prop="userEmail"
         header-align="center"
         align="center"
         label="邮箱"
       />
       <el-table-column
-        prop="mobile"
+        prop="userPhone"
         header-align="center"
         align="center"
         label="手机号"
@@ -61,7 +61,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="userCreateDate"
         header-align="center"
         align="center"
         width="180"
@@ -75,8 +75,8 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userNo)">修改</el-button>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userNo)">删除</el-button>
+          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
+          <el-button  type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,7 +96,7 @@
 
 <script>
 import AddOrUpdate from './user-add-or-update'
-import { getUserList, deleteUser } from '@/api/user'
+import { getUserList, deleteUser, searchUserByName} from '@/api/user'
 export default {
   name: 'User',
   components: {
@@ -128,8 +128,17 @@ export default {
         'pageSize': this.pageSize,
         'userName': this.dataForm.userName
       }).then(data => {
-        this.dataList = data.body.resultList
+        this.dataList = data.body.users
         this.totalPage = data.body.total
+        this.dataListLoading = false
+      })
+    },
+    searchUserByName() {
+      this.dataListLoading = true
+      searchUserByName(
+        this.dataForm.userName
+      ).then(data => {
+        this.dataList = data.body.users
         this.dataListLoading = false
       })
     },
@@ -165,9 +174,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteUser({
-          'userNos': userNos
-        }).then(data => {
+        deleteUser(
+          userNos
+        ).then(data => {
           this.$message({
             message: '操作成功',
             type: 'success',

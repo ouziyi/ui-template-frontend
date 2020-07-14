@@ -89,8 +89,6 @@
 
 <script>
 import Background from '@/components/Background'
-// import logo from '@/assets/images/logo.png'
-import { getPublicKey } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -174,16 +172,13 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          getPublicKey().then(data => {
-            this.encryptPwd = this.$getRsaCode(this.loginForm.password, data.body)
-            this.$store.dispatch('user/login', { 'username': this.loginForm.username, 'password': this.encryptPwd, 'verifyCode': this.loginForm.verifyCode }).then(() => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            }).catch(() => {
-              this.refreshCode()
-              delete this.loginForm.verifyCode
-              this.loading = false
-            })
+          this.$store.dispatch('user/login', { 'username': this.loginForm.username, 'password': this.loginForm.password, 'verifyCode': this.loginForm.verifyCode }).then(() => {
+            this.$router.push({ path: this.redirect || '/' })
+            this.loading = false
+          }).catch(() => {
+            this.refreshCode()
+            delete this.loginForm.verifyCode
+            this.loading = false
           })
         } else {
           return false

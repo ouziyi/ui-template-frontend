@@ -44,7 +44,30 @@ export const constantRoutes = [
   }
 ]
 
-export const asyncRoutes = []
+export const asyncRoutes = [
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting/user',
+    name: 'Setting',
+    alwaysShow: true,
+    meta: { title: '系统设置', icon: 'icon-system', noCache: true, permission: 'admin:setting' },
+    children: [
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/sys/user'),
+        meta: { title: '用户管理', icon: 'user', noCache: true, permission: 'admin:user' }
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/sys/role'),
+        meta: { title: '角色管理', icon: 'tree', permission: 'admin:role' }
+      }
+    ]
+  }
+]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

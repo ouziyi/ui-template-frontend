@@ -54,16 +54,15 @@ export function resetToken() {
 export function getUserList(data) {
   return request({
     url: '/user/list',
-    method: 'post',
-    data: { body: data }
+    method: 'get',
+    param: data
   })
 }
 
-export function deleteUser(data) {
+export function deleteUser(userId) {
   return request({
-    url: '/user/delete',
-    method: 'delete',
-    data: { body: data }
+    url: '/user/delete?userId=' + userId,
+    method: 'delete'
   })
 }
 
@@ -72,5 +71,13 @@ export function updatePassword(data) {
     url: '/user/password',
     method: 'post',
     data: { body: data }
+  })
+
+}
+
+export function searchUserByName(userName) {
+  return request({
+    url: '/user/searchuserbyname?username=' + userName,
+    method: 'post'
   })
 }

@@ -70,10 +70,10 @@ const mutations = {
 const actions = {
   generateResourcesRoutes({ commit }, resources) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (resources && resources.length > 0) {
-        accessedRoutes = asyncRoutes.concat(assembleAsyncRoutes(resources))
-      }
+      const accessedRoutes = asyncRoutes
+      // if (resources && resources.length > 0) {
+      //   accessedRoutes = asyncRoutes.concat(assembleAsyncRoutes(resources))
+      // }
       accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
